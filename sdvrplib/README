@@ -1,0 +1,141 @@
+========================================================================
+|                                                                      |
+|                           SDVRPLIB                                   |
+|                                                                      |
+|                     Version of March 13, 1998                        |
+|                                                                      |
+|                     Dpto. Estadistica e I.O.                         |
+|                      Universitat de Valencia                         |
+|                                                                      |
+========================================================================
+
+
+In the current version all problems are defined on a complete graph. 
+
+==========================================================================
+|                                                                        |
+| 1. THE FILE FORMAT                                                     |
+|                                                                        |
+==========================================================================
+
+Basically, each file consists of two parts: a specification part and a 
+data part. The specification part contains information on the file format 
+and on its contents. The data part contains explicit data.
+
+==========================================================================
+| 1.1. The specification part                                            |
+==========================================================================
+
+All entries in this section consist of lines of the form
+
+-----------------------------------------------
+<keyword> : <value>
+-----------------------------------------------
+
+where <keyword> denotes an alphanumerical keyword and <value> denotes 
+alphanumerical or numerical data. The terms <string>, <integer> and <real>
+denote character string, integer or real data, respectively. Integer and
+real numbers are given in free format. 
+
+Below we give a list of all available keywords.
+
+-----------------------------------------------
+NAME : <string>
+-----------------------------------------------
+
+Used as an identification of the data file (name of the instance).
+
+---------------------------------------------------
+COMMENT : (<string>)
+---------------------------------------------------
+
+An additional comment on the data. In the actual version:
+
+   <string>, Min no of trucks: <integer>, Best value: <integer>
+
+where <string> contains the origin of the instances. 
+
+-----------------------------------------------
+TYPE : SDVRP
+-----------------------------------------------
+
+Specifies the nature of the data. Here, data for a split delivery vehicle
+routing problem.
+
+-----------------------------------------------
+DIMENSION : <integer>
+-----------------------------------------------
+
+Specifies the number of nodes (clients plus depot).
+
+-----------------------------------------------
+EDGE_WEIGHT_TYPE : EUC_2D
+-----------------------------------------------
+
+Specifies how the edge "weights" (or "lengths") are given if they are
+given explicitly. The value denotes weights are given by the 2-dimensional
+Euclidean distance.
+
+-----------------------------------------------
+CAPACITY : <integer>
+-----------------------------------------------
+
+Specifies the capacity of a truck.
+
+
+==========================================================================
+| 1.2. The data part                                                     |
+==========================================================================
+
+The data are given in the corresponding data sections which follow the
+specification part. Each data section is started with a corresponding 
+keyword. The length of the section is either implicitly known from the 
+format specification or the section is terminated by special end-of-section 
+terminators.
+
+-----------------------------------------------
+ NODE_COORD_SECTION : 
+-----------------------------------------------
+
+Coordinates of each node are given in this section. Each line is of the form
+
+<integer>  <integer>  <integer> 
+
+They are the node and its x- and y-coordinates.
+
+
+-----------------------------------------------
+ DEMAND_SECTION : 
+-----------------------------------------------
+
+Demand of each node are given in this section. Each line is of the form
+
+<integer>  <integer> 
+
+The first number is the node and the second its demand.
+
+
+-----------------------------------------------
+DEPOT_SECTION :  1
+-----------------------------------------------
+
+Contains the index of depot node (always node 1). 
+
+
+
+==========================================================================
+|                                                                        |
+| 2.  FILES                                                              |
+|                                                                        |
+==========================================================================
+
+The data files that are available in SDVRPLIB directory in the 
+above format correspond to those used in the paper:
+
+     "A Lower Bound for the Split Delivery Vehicle Routing Problem", 
+     J.M. Belenguer, M.C. Martinez and E. Mota, 
+     Technical Report 6-97, 
+     Departamento de Estadistica e Investigacion Operativa, 
+     Universitat de Valencia, Spain (1997).
+
+
