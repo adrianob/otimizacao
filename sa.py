@@ -1,4 +1,5 @@
 import sys
+import glpk
 import os
 
 if len(sys.argv) < 2:
