@@ -5,7 +5,7 @@ import random
 import os
 import numpy
 
-if len(sys.argv) < 2:
+if len(sys.argv) < 5:
     print("usage python sa.py <input_file> <temperature> <alpha> <neighbours>")
     exit()
 
@@ -20,6 +20,7 @@ capacity = int(lines[5].split(' ')[2])
 
 node_coords = list(map(lambda line: map(lambda n: int(n), line.split(' ')[1:]), lines[7:(7+dimension)]))
 
+#read demands of each node from input file
 def read_demands():
     return list(map(lambda line: int(line.split(' ')[1]), lines[(7+dimension+1):(7+dimension+1+dimension)]))
 
@@ -27,7 +28,7 @@ k_min = int(math.ceil(sum(read_demands())/float(capacity)))
 
 def generate_initial_solution():
     paths = []
-    #generate random path for each truck
+    #generate random path for each truck that goes through all nodes
     for truck in xrange(0, k_min):
         path = [capacity]
         lst = [i for i in xrange(1,dimension)]
@@ -38,6 +39,7 @@ def generate_initial_solution():
         paths.append(path)
     return paths
 
+#clients in path have no demand
 def no_more_demand(path, demands):
     over = True
     for city in path:
@@ -45,15 +47,18 @@ def no_more_demand(path, demands):
             over = False
     return over
 
+#euclidian distance
 def distance((x, y), (a, b)):
     return math.sqrt((x - a) ** 2 + (y - b) ** 2)
 
+#all clients fullfiled their demands
 def fullfiled_demand(demands):
     return all(v == 0 for v in demands)
 
 def move_probability(delta, temperature):
     return math.exp((delta )/ temperature)
 
+#return cost for given paths, remove unneded nodes from path
 def test_paths(paths):
     temp_paths = copy.deepcopy(paths)
     cost = 0.0
@@ -102,13 +107,16 @@ def generate_candidate(paths):
     paths.append(new_path)
     return paths
 
+#main algorithm
 def simulated_annealing():
     global temperature, alpha, neighbours
 
     new_demands = current_demands = read_demands()
+    #create a viable initial solution
     while not fullfiled_demand(new_demands):
         current_paths = generate_initial_solution()
         current_cost, current_paths, new_demands = test_paths(list(current_paths))
+    print "solucao inicial", current_cost
     while True:
         temperature = temperature * alpha
         if temperature < 0.1:
@@ -118,6 +126,7 @@ def simulated_annealing():
             candidate = generate_candidate(temp)
             new_cost, new_paths, new_demands = test_paths(candidate)
             delta = current_cost - new_cost
+            #better performance, chose as new starting point
             if delta > 0.0 and fullfiled_demand(new_demands):
                 current_paths = copy.deepcopy(candidate)
                 current_cost = new_cost
@@ -125,10 +134,11 @@ def simulated_annealing():
             else:
                 random_number = numpy.random.random()
                 prob = move_probability(delta/100, temperature)
+                #try to avoid max local
                 if prob > random_number and fullfiled_demand(new_demands):
                     current_paths = copy.deepcopy(candidate)
                     current_demands = copy.deepcopy(new_demands)
                     current_cost = new_cost
 
 paths, cost = simulated_annealing()
-print cost, paths
+print "solucao final", cost, paths
