@@ -6,11 +6,11 @@ import os
 import numpy
 
 if len(sys.argv) < 2:
-    print("usage python sa.py <input_file>")
+    print("usage python sa.py <output_file>")
     exit()
 
-file_in = open(sys.argv[1], "r")
-lines = file_in.readlines()
+file_in = sys.stdin.read()
+lines = file_in.split('\n')
 
 dimension = int(lines[3].split(' ')[2])
 capacity = int(lines[5].split(' ')[2])
@@ -18,12 +18,11 @@ capacity = int(lines[5].split(' ')[2])
 node_coords = list(map(lambda line: map(lambda n: int(n), line.split(' ')[1 if line[0] == ' ' else 0:]), lines[7:(7+dimension)]))
 
 
-#read demands of each node from input file
+#read prizes of each node from input file
 def read_prizes():
     return list(map(lambda line: int(line.split(' ')[1]), lines[(7+dimension+1):(7+dimension+1+dimension)]))
 
 
-# print node_coords
 prizes = read_prizes()
 
 #choose randomly 1/2 the cities
@@ -62,6 +61,7 @@ def twoopt(paths):
     new_route.extend(paths[k+1:])
     return new_route
 
+#objective function
 def cost(path):
     total_cost = 0
     dist = 0
@@ -120,6 +120,7 @@ def generate_neighbours(path):
     return new_path
 
 
+# main local search algorithm
 def local_search(initial_path):
     runs = 0
     current = copy.deepcopy(initial_path)
@@ -137,7 +138,7 @@ def local_search(initial_path):
     return current
 
 
-# cross exchange
+# uses cross exchange (removes 4 edges and connect again in cross shape)
 def perturbation(path):
     paths = copy.deepcopy(path)
     if len(paths) > 11:
@@ -148,9 +149,10 @@ def perturbation(path):
     return paths
 
 
+# main algorithm
 def ils():
     initial_path = generate_initial_solution()
-    print cost(initial_path)
+    # print cost(initial_path)
     local_min = local_search(initial_path)
     min_cost = cost(local_min)
     # print min_cost
@@ -165,6 +167,13 @@ def ils():
         if ls_cost < min_cost:
             local_min = copy.deepcopy(ls)
             min_cost = ls_cost
+
+    target = open(sys.argv[1], 'w')
+    target.write(str(min_cost))
+    target.write('\n')
+    target.write(str(local_min))
+    target.close()
     print min_cost
+    print local_min
 
 ils()
