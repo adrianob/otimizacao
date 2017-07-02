@@ -66,7 +66,7 @@ def cost(path):
     total_cost = 0
     dist = 0
     for i,city in enumerate(path[0:len(path)-1]):
-        dist += distance((city[1], city[2]), (path[i+1][1], path[i+1][2]))
+        dist = distance((city[1], city[2]), (path[i+1][1], path[i+1][2]))
         total_cost += dist
         prize = prizes[city[0]-1]
         total_cost -= prize
@@ -150,7 +150,7 @@ def perturbation(path):
 
 def ils():
     initial_path = generate_initial_solution()
-    # print cost(initial_path)
+    print cost(initial_path)
     local_min = local_search(initial_path)
     min_cost = cost(local_min)
     # print min_cost
@@ -166,6 +166,5 @@ def ils():
             local_min = copy.deepcopy(ls)
             min_cost = ls_cost
     print min_cost
-    print local_min
 
 ils()
