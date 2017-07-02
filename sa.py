@@ -42,13 +42,23 @@ def generate_initial_solution():
 def distance((x, y), (a, b)):
     return math.sqrt((x - a) ** 2 + (y - b) ** 2)
 
-
-#shuffle two nodes in a path
-def twoopt(paths):
+# shuffle two nodes in a path
+def path_shuffle(paths):
     i = random.randrange(1,len(paths)-2)
     j = i - 1 if (i == len(paths)-2) else i + 1
     paths[i], paths[j] = paths[j], paths[i]
     return paths
+
+# 2-opt
+def twoopt(paths):
+    if len(paths) <= 4:
+        return paths
+    i = random.randrange(1, len(paths)/2)
+    k = random.randrange(len(paths)/2 + 1, len(paths) - 1)
+    new_route = paths[0:i]
+    new_route.extend(reversed(paths[i:k + 1]))
+    new_route.extend(paths[k+1:])
+    return new_route
 
 def cost(path):
     total_cost = 0
@@ -62,11 +72,11 @@ def cost(path):
 
 
 def generate_neighbours(path):
-    choice = random.randrange(1, 4)
+    choice = random.randrange(1, 5)
     new_path = copy.deepcopy(path)
 
     if choice == 1:
-        new_path = twoopt(path)
+        new_path = path_shuffle(path)
     elif choice == 2:
         diff = []
         for node in node_coords:
@@ -83,6 +93,8 @@ def generate_neighbours(path):
     elif len(new_path) > 4 and choice == 3:
         index = random.randrange(1, len(new_path)-2)
         new_path.pop(index)
+    elif len(new_path) > 4 and choice == 4:
+        new_path = twoopt(path)
 
     return new_path
 
@@ -94,7 +106,7 @@ def local_search(initial_path):
     while runs < 10:
         runs += 1
         temp = copy.deepcopy(current)
-        for i in xrange(0, 10):
+        for i in xrange(0, 20):
             neighbour = generate_neighbours(temp)
             cost_n = cost(neighbour)
             if cost_n < current_cost:
