@@ -138,7 +138,7 @@ def local_search(initial_path):
 # cross exchange
 def perturbation(path):
     paths = copy.deepcopy(path)
-    if len(paths) > 10:
+    if len(paths) > 11:
         i = 2
         i = random.randrange(2, len(paths)/4)
         paths[i], paths[i+2], paths[i+4], paths[i+6] = paths[i+6], paths[i], paths[i+2], paths[i+4]
