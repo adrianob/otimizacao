@@ -44,7 +44,9 @@ def distance((x, y), (a, b)):
 
 # shuffle two nodes in a path
 def path_shuffle(paths):
-    i = random.randrange(1,len(paths)-2)
+    if len(paths) < 4:
+        return paths
+    i = random.randrange(1, len(paths)-1)
     j = i - 1 if (i == len(paths)-2) else i + 1
     paths[i], paths[j] = paths[j], paths[i]
     return paths
@@ -90,14 +92,14 @@ def generate_neighbours(path):
                 diff.append(node)
 
         random.shuffle(diff)
-        index = random.randrange(1, len(new_path)-2)
+        index = random.randrange(1, len(new_path)-1)
         new_path.insert(index, diff[0])
     #remove node from path
-    elif len(new_path) > 4 and choice == 3:
-        index = random.randrange(1, len(new_path)-2)
+    elif len(new_path) > 3 and choice == 3:
+        index = random.randrange(1, len(new_path)-1)
         new_path.pop(index)
     #2-opt
-    elif len(new_path) > 4 and choice == 4:
+    elif len(new_path) > 3 and choice == 4:
         new_path = twoopt(path)
     #replace node with one not in path
     elif choice == 5:
@@ -111,7 +113,7 @@ def generate_neighbours(path):
                 diff.append(node)
 
         random.shuffle(diff)
-        index = random.randrange(1, len(new_path)-2)
+        index = random.randrange(1, len(new_path)-1)
         new_path.pop(index)
         new_path.insert(index, diff[0])
 
