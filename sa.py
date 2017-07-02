@@ -80,7 +80,7 @@ def generate_neighbours(path):
         random.shuffle(diff)
         index = random.randrange(1, len(new_path)-2)
         new_path.insert(index, diff[0])
-    elif len(new_path) > 4:
+    elif len(new_path) > 4 and choice == 3:
         index = random.randrange(1, len(new_path)-2)
         new_path.pop(index)
 
@@ -104,22 +104,23 @@ def local_search(initial_path):
     return current
 
 
+# cross exchange
 def perturbation(path):
     paths = copy.deepcopy(path)
-    i = random.randrange(1,len(paths)-2)
-    j = random.randrange(1,len(paths)-2)
-    paths[i], paths[j] = paths[j], paths[i]
-    i = random.randrange(1,len(paths)-2)
-    j = random.randrange(1,len(paths)-2)
-    paths[i], paths[j] = paths[j], paths[i]
+    if len(paths) > 10:
+        i = 2
+        i = random.randrange(2, len(paths)/4)
+        paths[i], paths[i+2], paths[i+4], paths[i+6] = paths[i+6], paths[i], paths[i+2], paths[i+4]
+
     return paths
 
 
 def ils():
     initial_path = generate_initial_solution()
+    # print cost(initial_path)
     local_min = local_search(initial_path)
     min_cost = cost(local_min)
-    print min_cost
+    # print min_cost
     runs = 0
     while runs < len(node_coords)/2:
         runs += 1
@@ -131,7 +132,7 @@ def ils():
         if ls_cost < min_cost:
             local_min = copy.deepcopy(ls)
             min_cost = ls_cost
-    print local_min
     print min_cost
+    print local_min
 
 ils()
