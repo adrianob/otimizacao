@@ -81,7 +81,7 @@ def generate_neighbours(path):
     if choice == 1:
         new_path = path_shuffle(path)
     #add node not in path
-    elif choice == 2:
+    elif choice == 2 and len(new_path) < len(node_coords):
         diff = []
         for node in node_coords:
             found = False
@@ -102,7 +102,7 @@ def generate_neighbours(path):
     elif len(new_path) > 3 and choice == 4:
         new_path = twoopt(path)
     #replace node with one not in path
-    elif choice == 5:
+    elif choice == 5 and len(new_path) < len(node_coords):
         diff = []
         for node in node_coords:
             found = False
