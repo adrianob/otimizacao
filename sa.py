@@ -72,11 +72,13 @@ def cost(path):
 
 
 def generate_neighbours(path):
-    choice = random.randrange(1, 5)
+    choice = random.randrange(1, 6)
     new_path = copy.deepcopy(path)
 
+    #shuffle 2 nodes
     if choice == 1:
         new_path = path_shuffle(path)
+    #add node not in path
     elif choice == 2:
         diff = []
         for node in node_coords:
@@ -90,11 +92,28 @@ def generate_neighbours(path):
         random.shuffle(diff)
         index = random.randrange(1, len(new_path)-2)
         new_path.insert(index, diff[0])
+    #remove node from path
     elif len(new_path) > 4 and choice == 3:
         index = random.randrange(1, len(new_path)-2)
         new_path.pop(index)
+    #2-opt
     elif len(new_path) > 4 and choice == 4:
         new_path = twoopt(path)
+    #replace node with one not in path
+    elif choice == 5:
+        diff = []
+        for node in node_coords:
+            found = False
+            for p in new_path:
+                if p[0] == node[0]:
+                    found = True
+            if not found:
+                diff.append(node)
+
+        random.shuffle(diff)
+        index = random.randrange(1, len(new_path)-2)
+        new_path.pop(index)
+        new_path.insert(index, diff[0])
 
     return new_path
 
