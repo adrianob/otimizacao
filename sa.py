@@ -2,8 +2,6 @@ import sys
 import math
 import copy
 import random
-import os
-import numpy
 
 if len(sys.argv) < 2:
     print("usage python sa.py <output_file>")
@@ -13,10 +11,8 @@ file_in = sys.stdin.read()
 lines = file_in.split('\n')
 
 dimension = int(lines[3].split(' ')[2])
-capacity = int(lines[5].split(' ')[2])
 
 node_coords = list(map(lambda line: map(lambda n: int(n), line.split(' ')[1 if line[0] == ' ' else 0:]), lines[7:(7+dimension)]))
-
 
 #read prizes of each node from input file
 def read_prizes():
@@ -73,6 +69,7 @@ def cost(path):
     return total_cost
 
 
+# choose randonly between strategies
 def generate_neighbours(path):
     choice = random.randrange(1, 6)
     new_path = copy.deepcopy(path)
@@ -151,18 +148,20 @@ def perturbation(path):
 
 # main algorithm
 def ils():
+    #get initial solution
     initial_path = generate_initial_solution()
     # print cost(initial_path)
+    # find locam minimum for initial solution
     local_min = local_search(initial_path)
     min_cost = cost(local_min)
-    # print min_cost
     runs = 0
+    #introduce perturbations looking to escape local minimums
     while runs < len(node_coords)/2:
         runs += 1
-        temp2 = copy.deepcopy(local_min)
-        per = perturbation(temp2)
-        temp = copy.deepcopy(per)
-        ls = local_search(temp)
+        temp_local_min = copy.deepcopy(local_min)
+        per = perturbation(temp_local_min)
+        temp_per = copy.deepcopy(per)
+        ls = local_search(temp_per)
         ls_cost = cost(ls)
         if ls_cost < min_cost:
             local_min = copy.deepcopy(ls)
